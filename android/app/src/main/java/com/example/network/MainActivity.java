@@ -8,14 +8,20 @@ import androidx.annotation.NonNull;
 
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodChannel;
 
 public class MainActivity extends FlutterActivity {
     private static final String CHANNEL = "NETWORK";
+    // 1. Объявляем имя канала в Android
+    private static final String STREAM = "STREAM";
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         super.configureFlutterEngine(flutterEngine);
+        // 2. Создаем новый EventChannel
+        new EventChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), STREAM)
+                .setStreamHandler(new NetworkStreamHandler(this));
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL)
                 .setMethodCallHandler(
                         (call, result) -> {
